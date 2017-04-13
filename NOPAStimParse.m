@@ -31,7 +31,7 @@ nstim = 15;
 nreps = 50;
 
 blocks_ncorrect = 5;
-blocks_nwrong = 9;
+blocks_nwrong = 5;
 blocks_nodd = 1;
 blocks_nreps = 10;
 
@@ -111,12 +111,17 @@ for i = 1:total_blocks
     if ~oddmode;
         temp_free = [wrong_pairs{i}(:,2)' corrpairs(oddidx(i),2)];
         ix = randperm(length(temp_free),length(temp_free));
-        dandi = temp_free(ix(1:blocks_nwrong));
+        dandi = temp_free(ix(1:end-1));
+        
         while ~isempty(find(strcmp(dandi,wrong_pairs{i}(:,2)')))
             ix = randperm(length(temp_free),length(temp_free));
-            dandi = temp_free(ix(1:blocks_nwrong));
+            dandi = temp_free(ix(1:end-1));
         end
+        
         wrong_pairs{i}(:,2) = dandi';
+        shuff = randperm(length(wrong_pairs{i}),blocks_nwrong);
+        wrong_pairs{i} = wrong_pairs{i}(shuff,:);
+        
         oddstim{i} = corrpairs(oddidx(i),1);
         image_locs = find(strcmp(oddstim{i},im_forms));
         theseones = randi(length(image_locs),1,blocks_nreps);
@@ -129,12 +134,17 @@ for i = 1:total_blocks
     else
         temp_free = [wrong_pairs{i}(:,1)' corrpairs(oddidx(i),1)];
         ix = randperm(length(temp_free),length(temp_free));
-        dandi = temp_free(ix(1:blocks_nwrong));
+        dandi = temp_free(ix(1:end-1));
+        
         while ~isempty(find(strcmp(dandi,wrong_pairs{i}(:,1)')))
             ix = randperm(length(temp_free),length(temp_free));
-            dandi = temp_free(ix(1:blocks_nwrong));
+            dandi = temp_free(ix(1:end-1));
         end
+        
         wrong_pairs{i}(:,1) = dandi';
+        shuff = randperm(length(wrong_pairs{i}),blocks_nwrong);
+        wrong_pairs{i} = wrong_pairs{i}(shuff,:);
+        
         oddstim{i} = corrpairs(oddidx(i),2);
         theseones = randi(length(bmp_filelist),1,blocks_nreps);
         oddimages = bmp_filelist(theseones,:);
